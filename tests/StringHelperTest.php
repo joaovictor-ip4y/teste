@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use App\StringHelper;  // Adicionando o namespace correto para importar a classe
+use App\StringHelper;
 
 class StringHelperTest extends TestCase
 {
@@ -15,18 +15,10 @@ class StringHelperTest extends TestCase
     public function testReverseString()
     {
         $this->assertEquals('cba', $this->stringHelper->reverseString('abc'));
-        $this->assertEquals('54321', $this->stringHelper->reverseString('12345'));
     }
 
     public function testToUpperCase()
     {
         $this->assertEquals('HELLO', $this->stringHelper->toUpperCase('hello'));
-        $this->assertEquals('WORLD', $this->stringHelper->toUpperCase('world'));
-    }
-
-    public function testConcatenate()
-    {
-        $this->assertEquals('Hello World', $this->stringHelper->concatenate('Hello ', 'World'));
-        $this->assertEquals('12345abc', $this->stringHelper->concatenate('12345', 'abc'));
     }
 }

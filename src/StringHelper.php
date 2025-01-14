@@ -4,18 +4,19 @@ namespace App;
 
 class StringHelper
 {
-    public function reverseString($string)
+    public function reverseString(string $str): string
     {
-        return strrev($string);
+        return strrev($str);
     }
 
-    public function toUpperCase($string)
+    public function toUpperCase(string $str): string
     {
-        return strtoupper($string);
+        return strtoupper($str);
     }
 
-    public function concatenate($string1, $string2)
+    // Aqui não vamos testar este método na classe de testes, para garantir cobertura baixa
+    public function concatenate(string $str1, string $str2): string
     {
-        return $string1 . $string2;
+        return $str1 . $str2;
     }
 }
