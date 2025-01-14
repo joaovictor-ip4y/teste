@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use App\StringHelper;  // Adicionando o namespace correto para importar a classe
 
 class StringHelperTest extends TestCase
 {

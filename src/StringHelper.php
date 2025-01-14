@@ -1,20 +1,21 @@
 <?php
 
-// src/StringHelper.php
+namespace App;
+
 class StringHelper
 {
-    public function reverseString($str)
+    public function reverseString($string)
     {
-        return strrev($str);
+        return strrev($string);
     }
 
-    public function toUpperCase($str)
+    public function toUpperCase($string)
     {
-        return strtoupper($str);
+        return strtoupper($string);
     }
 
-    public function concatenate($str1, $str2)
+    public function concatenate($string1, $string2)
     {
-        return $str1 . $str2;
+        return $string1 . $string2;
     }
 }
