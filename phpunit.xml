@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/autoload.php">
+    <!-- Diretórios e arquivos de teste -->
+    <testsuites>
+        <testsuite name="Unit Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <!-- Cobertura de código -->
+    <coverage>
+        <include>
+            <directory suffix=".php">src/</directory> <!-- Ajuste o caminho do código fonte -->
+        </include>
+        <exclude>
+            <directory suffix=".php">tests/</directory> <!-- Exclua os testes da cobertura -->
+        </exclude>
+    </coverage>
+
+</phpunit>

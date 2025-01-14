@@ -1,38 +1,37 @@
-name: Code Coverage
+name: Run Tests and Upload Coverage
 
 on:
   push:
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
 
 jobs:
   test:
-    name: Test and Coverage
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Install PHP 8.0
-      run: |
-        sudo add-apt-repository ppa:ondrej/php
-        sudo apt update
-        sudo apt install -y php8.0 php8.0-cli php8.0-xml php8.0-mbstring php8.0-zip php8.0-curl php8.0-bcmath
-
-    - name: Install Composer
-      run: |
-        curl -sS https://getcomposer.org/installer | php
-        sudo mv composer.phar /usr/local/bin/composer
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        extensions: mbstring, xml, bcmath, curl, zip
 
     - name: Install dependencies
       run: |
-        composer install
+        composer install --no-interaction
 
-    - name: Run PHPUnit tests
+    - name: Run PHPUnit tests with coverage
       run: |
         vendor/bin/phpunit --coverage-clover=coverage.xml
 
-    - name: Upload Code Coverage
-      uses: codecov/codecov-action@v2
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
       with:
         file: coverage.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
