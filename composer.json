@@ -1,15 +1,13 @@
 {
   "name": "joaovictor/coverage-test",
   "description": "Projeto de teste para cobertura de código",
-  "require": {
-    "phpunit/phpunit": "^9.6"
-  },
   "autoload": {
     "psr-4": {
       "App\\": "src/"
     }
   },
   "require-dev": {
-    "phpunit/php-code-coverage": "^9.2"
+    "phpunit/php-code-coverage": "^9.2",
+    "phpunit/phpunit": "^9.6"
   }
 }
