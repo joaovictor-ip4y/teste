@@ -25,7 +25,7 @@ class StringHelperTest extends TestCase
 
     public function testConcatenate()
     {
-        $this->assertEquals('Hello World', $this->stringHelper->concatenate('Hello', ' World'));
+        $this->assertEquals('Hello World', $this->stringHelper->concatenate('Hello ', 'World'));
         $this->assertEquals('12345abc', $this->stringHelper->concatenate('12345', 'abc'));
     }
 }
