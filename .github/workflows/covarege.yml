@@ -1,4 +1,4 @@
-name: Coode Coverage
+name: Code Coverage
 
 on:
   push:
@@ -13,18 +13,25 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up PHP
-      uses: actions/setup-php@v2  # Usando v2
+    - name: Install PHP 8.0
+      run: |
+        sudo apt update
+        sudo apt install -y php8.0 php8.0-cli php8.0-xml php8.0-mbstring php8.0-zip php8.0-curl php8.0-bcmath
+
+    - name: Install Composer
+      run: |
+        curl -sS https://getcomposer.org/installer | php
+        sudo mv composer.phar /usr/local/bin/composer
 
     - name: Install dependencies
       run: |
         composer install
 
     - name: Run PHPUnit tests
-      run: vendor/bin/phpunit --coverage-clover=coverage.xml
+      run: |
+        vendor/bin/phpunit --coverage-clover=coverage.xml
 
     - name: Upload Code Coverage
       uses: codecov/codecov-action@v2
       with:
         file: coverage.xml
-
