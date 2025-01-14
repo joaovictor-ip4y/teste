@@ -3,7 +3,7 @@
         'name' => 'joaovictor/coverage-test',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '69ab1c4759f3bb797202837f9024f1ebb7c9049d',
+        'reference' => 'd610e0c9d5846358854efc60adfbf18178d6ff20',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -22,7 +22,7 @@
         'joaovictor/coverage-test' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '69ab1c4759f3bb797202837f9024f1ebb7c9049d',
+            'reference' => 'd610e0c9d5846358854efc60adfbf18178d6ff20',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
