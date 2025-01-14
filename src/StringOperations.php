@@ -8,7 +8,7 @@ class StringOperations
      * Contar o número de palavras em uma string.
      *
      * @param string $str A string para contar as palavras.
-     * @return int O número de palavras na string.
+     * @return int O número de palavradfvgdfs na string.
      */
     public function countWords(string $str): int
     {
