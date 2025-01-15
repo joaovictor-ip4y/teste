@@ -1,4 +1,4 @@
-name: Run Tests and Upload Coverage
+name: Run Tests and Enforce Coverage
 
 on:
   push:
@@ -30,21 +30,24 @@ jobs:
       run: |
         vendor/bin/phpunit --coverage-clover=coverage.xml
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: coverage.xml
-        token: ${{ secrets.CODECOV_TOKEN }}
-
-    - name: Check Codecov Coverage
+    - name: Ensure coverage is above 60%
       run: |
-        # Extract the coverage percentage from the coverage.xml file
-        coverage=$(grep -oPm1 "(?<=<coverage line-rate=\")[^\"]+" coverage.xml)
-
-        # Check if coverage is below 60%
-        if (( $(echo "$coverage < 0.60" | bc -l) )); then
-          echo "Coverage is below 60%, failing the workflow."
+        # Extrair a cobertura do arquivo coverage.xml
+        coverage=$(grep 'line-rate' coverage.xml | head -n 1 | grep -o '0\.[0-9]*')
+        if [ -z "$coverage" ]; then
+          echo "Error: Coverage not found in coverage.xml"
           exit 1
         fi
-
-        echo "Coverage is above 60%, proceeding."
+        
+        # Converter a cobertura para porcentagem
+        coverage_percent=$(echo "$coverage * 100" | bc | awk '{printf "%.0f\n", $1}')
+        
+        echo "Coverage detected: $coverage_percent%"
+        
+        # Verificar se a cobertura é maior ou igual a 60%
+        if [ "$coverage_percent" -lt 60" ]; then
+          echo "Coverage is below 60% ($coverage_percent%), failing the workflow."
+          exit 1
+        fi
+        
+        echo "Coverage is above 60% ($coverage_percent%), proceeding."
