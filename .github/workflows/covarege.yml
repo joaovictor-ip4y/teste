@@ -25,27 +25,17 @@ jobs:
     - name: Install dependencies
       run: |
         composer install --no-interaction
-        
-    - name: Run PHPUnit tests with coverage
-      run: |
-        vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
-        
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: coverage.xml
-        token: ${{ secrets.CODECOV_TOKEN }}
 
-    - name: Check Codecov Coverage
-      uses: codecov/codecov-action@v3
+    - name: Run PHPUnit tests and generate JUnit report
+      run: ./vendor/bin/phpunit --log-junit junit.xml
+
+    - name: Upload test results to Codecov
+      uses: codecov/test-results-action@v1
       with:
-        file: coverage.xml
         token: ${{ secrets.CODECOV_TOKEN }}
-      continue-on-error: true # Allow to fail without failing the entire workflow
+        files: junit.xml
 
     - name: Ensure coverage is above 60%
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # Definindo o token aqui
       run: |
         response=$(curl -s -H "Authorization: token $CODECOV_TOKEN" https://codecov.io/api/gh/${{ github.repository }}/reports/coverage)
         echo "API Response: $response"
