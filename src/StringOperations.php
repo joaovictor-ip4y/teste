@@ -4,28 +4,25 @@ namespace App;
 
 class StringOperations
 {
-    public function reverseString($string)
+    public function reverseString(string $input): string
     {
-        return strrev($string);
+        return strrev($input);
     }
 
-    public function toUpperCase($string)
+    public function toUpperCase(string $input): string
     {
-        return strtoupper($string);
+        return strtoupper($input);
     }
 
-    public function concatenate($string1, $string2)
+    // Método não testado para diminuir a cobertura
+    public function toLowerCase(string $input): string
     {
-        return $string1 . $string2;
+        return strtolower($input);
     }
 
-    public function getLength($string)
+    // Método adicional não utilizado nos testes
+    public function concatenateStrings(string $str1, string $str2): string
     {
-        return strlen($string);
-    }
-
-    public function contains($string, $substring)
-    {
-        return strpos($string, $substring) !== false;
+        return $str1 . $str2;
     }
 }
