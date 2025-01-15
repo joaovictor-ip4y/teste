@@ -1,4 +1,4 @@
-name: Run Tests and Upload Coverage
+name: Run Tests and Enforce Coverage
 
 on:
   push:
@@ -23,11 +23,31 @@ jobs:
         extensions: mbstring, xml, bcmath, curl, zip
 
     - name: Install dependencies
-      run: composer install --no-interaction
+      run: |
+        composer install --no-interaction
 
     - name: Run PHPUnit tests with coverage
-      run: vendor/bin/phpunit --coverage-clover=coverage.xml
-
-    - name: Check code coverage
       run: |
-        COVERAGE=$(grep 'line-rate' coverage.xml | grep -o '0\.[0
+        vendor/bin/phpunit --coverage-clover=coverage.xml
+
+    - name: Ensure coverage is above 60%
+      run: |
+        # Extrair a cobertura do arquivo coverage.xml
+        coverage=$(grep 'line-rate' coverage.xml | head -n 1 | grep -o '0\.[0-9]*')
+        if [ -z "$coverage" ]; then
+          echo "Error: Coverage not found in coverage.xml"
+          exit 1
+        fi
+        
+        # Converter a cobertura para porcentagem
+        coverage_percent=$(echo "$coverage * 100" | bc | awk '{printf "%.0f\n", $1}')
+        
+        echo "Coverage detected: $coverage_percent%"
+        
+        # Verificar se a cobertura é maior ou igual a 60%
+        if [ "$coverage_percent" -lt 60" ]; then
+          echo "Coverage is below 60% ($coverage_percent%), failing the workflow."
+          exit 1
+        fi
+        
+        echo "Coverage is above 60% ($coverage_percent%), proceeding."
