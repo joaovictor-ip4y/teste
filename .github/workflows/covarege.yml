@@ -26,6 +26,11 @@ jobs:
       run: |
         composer install --no-interaction
 
+    - name: Install xmllint
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libxml2-utils
+
     - name: Run PHPUnit tests and generate JUnit report
       run: ./vendor/bin/phpunit --log-junit junit.xml
 
