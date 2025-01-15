@@ -30,30 +30,49 @@ jobs:
       run: |
         vendor/bin/phpunit --coverage-clover=coverage.xml
 
+    - name: Check if coverage.xml exists
+      run: |
+        if [ ! -f coverage.xml ]; then
+          echo "coverage.xml not found!"
+          exit 1
+        fi
+
+    - name: Display coverage.xml content
+      run: |
+        cat coverage.xml
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
         file: coverage.xml
         token: ${{ secrets.CODECOV_TOKEN }}
 
-    - name: Show Coverage and Check
+    - name: Extract and check coverage
       run: |
+        # Verificar se o arquivo coverage.xml existe
+        if [ ! -f coverage.xml ]; then
+          echo "coverage.xml not found!"
+          exit 1
+        fi
+
         # Extrair a cobertura do arquivo coverage.xml
         coverage=$(grep 'line-rate' coverage.xml | head -n 1 | grep -o '0\.[0-9]*')
+
+        # Verificar se a cobertura foi extraída corretamente
         if [ -z "$coverage" ]; then
           echo "Error: Coverage not found in coverage.xml"
           exit 1
         fi
-        
+
         # Converter a cobertura para porcentagem
         coverage_percent=$(echo "$coverage * 100" | bc | awk '{printf "%.0f\n", $1}')
-        
+
         echo "Coverage detected: $coverage_percent%"
-        
+
         # Verificar se a cobertura é maior ou igual a 60%
         if [ "$coverage_percent" -lt 60 ]; then
           echo "Coverage is below 60% ($coverage_percent%), failing the workflow."
           exit 1
         fi
-        
+
         echo "Coverage is above 60% ($coverage_percent%), proceeding."
