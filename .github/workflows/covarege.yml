@@ -37,20 +37,17 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Check Codecov Coverage
-      uses: codecov/codecov-action@v3
-      with:
-        file: coverage.xml
-        token: ${{ secrets.CODECOV_TOKEN }}
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      continue-on-error: true  # Allow to fail without failing the entire workflow
-
-    - name: Ensure coverage is above 60%
       run: |
+        # Pega a resposta completa da API
+        response=$(curl -s https://codecov.io/api/gh/${{ github.repository }}/reports/coverage)
+        
+        # Exibe a resposta completa para depuração
+        echo "Codecov API Response: $response"
+        
         # Pega a cobertura total do repositório
-        coverage=$(curl -s https://codecov.io/api/gh/${{ github.repository }}/reports/coverage | jq -r '.total.coverage')
+        coverage=$(echo "$response" | jq -r '.total.coverage')
         echo "Coverage is: $coverage"
-
+        
         # Se a cobertura for um número decimal, arredonda para o valor inteiro
         coverage_value=$(echo "$coverage" | awk '{print int($1)}')
 
