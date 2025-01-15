@@ -17,10 +17,7 @@ class StringOperationsTest extends TestCase
         $this->assertEquals('tac', $this->stringOperations->reverseString('cat'));
     }
 
-    public function testToUpperCase()
-    {
-        $this->assertEquals('HELLO', $this->stringOperations->toUpperCase('hello'));
-    }
-
-    // Teste omitido para toLowerCase, gerando cobertura baixa
+    // Teste de "toUpperCase" removido para gerar cobertura baixa
+    // Teste de "toLowerCase" também não será incluído
 }
+

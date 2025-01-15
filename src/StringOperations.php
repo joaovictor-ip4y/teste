@@ -14,7 +14,7 @@ class StringOperations
         return strtoupper($input); // Coberta
     }
 
-    // Método não testado, causando cobertura baixa
+    // Método não testado, gerando cobertura parcial
     public function toLowerCase(string $input): string
     {
         return strtolower($input); // Não coberta
