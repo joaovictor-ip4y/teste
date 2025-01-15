@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="" tests="2" assertions="4" errors="0" warnings="0" failures="0" skipped="0" time="0.002429">
+    <testsuite name="Unit Test Suite" tests="2" assertions="4" errors="0" warnings="0" failures="0" skipped="0" time="0.002429">
+      <testsuite name="CalculatorTest" file="/home/joao_victor/Projects/teste/tests/CalculatorTest.php" tests="2" assertions="4" errors="0" warnings="0" failures="0" skipped="0" time="0.002429">
+        <testcase name="testAdd" class="CalculatorTest" classname="CalculatorTest" file="/home/joao_victor/Projects/teste/tests/CalculatorTest.php" line="8" assertions="2" time="0.002225"/>
+        <testcase name="testSubtract" class="CalculatorTest" classname="CalculatorTest" file="/home/joao_victor/Projects/teste/tests/CalculatorTest.php" line="15" assertions="2" time="0.000204"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

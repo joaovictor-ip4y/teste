@@ -31,8 +31,9 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libxml2-utils
 
-    - name: Run PHPUnit tests and generate JUnit report
-      run: ./vendor/bin/phpunit --log-junit junit.xml
+    - name: Run PHPUnit tests and generate JUnit and Coverage reports
+      run: |
+        ./vendor/bin/phpunit --log-junit junit.xml --coverage-clover coverage.xml
 
     - name: Upload test results to Codecov
       uses: codecov/test-results-action@v1
@@ -42,15 +43,15 @@ jobs:
 
     - name: Ensure coverage is above 60%
       run: |
-        # Parse the JUnit XML file to extract coverage percentage
-        coverage=$(xmllint --xpath "string(//testsuite/@coverage)" junit.xml)
+        # Parse the Clover XML file to extract coverage percentage
+        coverage=$(xmllint --xpath "string(//coverage/@line-rate)" coverage.xml)
         
         if [ -z "$coverage" ]; then
-          echo "Error: Coverage data not found in JUnit report."
+          echo "Error: Coverage data not found in Clover report."
           exit 1
         fi
 
-        coverage_value=$(echo "$coverage" | awk '{print int($1)}')
+        coverage_value=$(echo "$coverage" | awk '{print int($1 * 100)}')
         echo "Parsed Coverage: $coverage_value%"
         
         if [ "$coverage_value" -lt 60 ]; then
