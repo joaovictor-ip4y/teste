@@ -37,20 +37,14 @@ jobs:
 
     - name: Ensure coverage is above 60%
       run: |
-        response=$(curl -s -H "Authorization: token $CODECOV_TOKEN" https://codecov.io/api/gh/${{ github.repository }}/reports/coverage)
-        echo "API Response: $response"
+        # Parse the JUnit XML file to extract coverage percentage
+        coverage=$(xmllint --xpath "string(//testsuite/@coverage)" junit.xml)
         
-        if [ -z "$response" ] || echo "$response" | grep -q '"error"'; then
-          echo "Error: Failed to fetch coverage data from Codecov."
+        if [ -z "$coverage" ]; then
+          echo "Error: Coverage data not found in JUnit report."
           exit 1
         fi
-        
-        coverage=$(echo "$response" | jq -r '.total.coverage')
-        if [ -z "$coverage" ] || [ "$coverage" == "null" ]; then
-          echo "Error: Coverage data not found in API response."
-          exit 1
-        fi
-        
+
         coverage_value=$(echo "$coverage" | awk '{print int($1)}')
         echo "Parsed Coverage: $coverage_value%"
         
