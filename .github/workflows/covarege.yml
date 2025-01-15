@@ -33,24 +33,33 @@ jobs:
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
-        file: coverage.xml
+        files: coverage.xml
         token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Ensure coverage is above 60%
       run: |
-        response=$(curl -s https://codecov.io/api/gh/${{ github.repository }}/reports/coverage)
+        response=$(curl -s -H "Authorization: token $CODECOV_TOKEN" https://codecov.io/api/gh/${{ github.repository }}/reports/coverage)
         echo "API Response: $response"
-        coverage=$(echo "$response" | jq -r '.total.coverage')
-        if [ -z "$coverage" ]; then
-          echo "Error: Failed to fetch coverage data."
+        
+        if [ -z "$response" ] || echo "$response" | grep -q '"error"'; then
+          echo "Error: Failed to fetch coverage data from Codecov."
           exit 1
         fi
+
+        coverage=$(echo "$response" | jq -r '.total.coverage')
+        if [ -z "$coverage" ] || [ "$coverage" == "null" ]; then
+          echo "Error: Coverage data not found in API response."
+          exit 1
+        fi
+
         coverage_value=$(echo "$coverage" | awk '{print int($1)}')
         echo "Parsed Coverage: $coverage_value%"
+
         if [ "$coverage_value" -lt 60 ]; then
           echo "Coverage is below 60%, failing the workflow."
           exit 1
         fi
+
         echo "Coverage is above 60%, proceeding."
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
