@@ -14,13 +14,18 @@ class StringOperations
         return strtoupper($string);
     }
 
-    public function concatenate($string1, $string2
+    public function concatenate($string1, $string2)
     {
         return $string1 . $string2;
     }
 
-    public function getSubstring($string, $start, $length)
+    public function getLength($string)
     {
-        return substr($string, $start, $length);
+        return strlen($string);
+    }
+
+    public function contains($string, $substring)
+    {
+        return strpos($string, $substring) !== false;
     }
 }
