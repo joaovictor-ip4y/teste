@@ -2,6 +2,7 @@
 // tests/CalculatorTest.php
 
 use PHPUnit\Framework\TestCase;
+use App\Calculator; // Importando a classe Calculator corretamente
 
 class CalculatorTest extends TestCase
 {
