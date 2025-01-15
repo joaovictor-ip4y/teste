@@ -19,4 +19,10 @@ class StringOperations
     {
         return strtolower($input);
     }
+
+    // Método adicional não utilizado nos testes
+    public function concatenateStrings(string $str1, string $str2): string
+    {
+        return $str1 . $str2;
+    }
 }

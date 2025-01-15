@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests;
+namespace App\Tests;
 
-use PHPUnit\Framework\TestCase;
 use App\StringOperations;
+use PHPUnit\Framework\TestCase;
 
 class StringOperationsTest extends TestCase
 {
@@ -25,4 +25,6 @@ class StringOperationsTest extends TestCase
         $this->assertEquals('HELLO', $this->stringOperations->toUpperCase('hello'));
         $this->assertEquals('WORLD', $this->stringOperations->toUpperCase('world'));
     }
+
+    // Não testando o método toLowerCase e concatenateStrings
 }
