@@ -38,9 +38,13 @@ jobs:
 
     - name: Check Codecov Coverage
       run: |
-        coverage=$(xpath -q -e "//*[local-name()='coverage']/@line-rate" coverage.xml | sed 's/line-rate="//' | sed 's/"//')
+        # Extract the coverage percentage from the coverage.xml file
+        coverage=$(grep -oPm1 "(?<=<coverage line-rate=\")[^\"]+" coverage.xml)
+
+        # Check if coverage is below 60%
         if (( $(echo "$coverage < 0.60" | bc -l) )); then
           echo "Coverage is below 60%, failing the workflow."
           exit 1
         fi
+
         echo "Coverage is above 60%, proceeding."
