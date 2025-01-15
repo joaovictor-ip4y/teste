@@ -1,4 +1,4 @@
-name: Run Tests and Upload Coverage
+name: Run Tests and Check Coverage
 
 on:
   push:
@@ -30,43 +30,19 @@ jobs:
       run: |
         vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: coverage.xml
-        token: ${{ secrets.CODECOV_TOKEN }}
-
-    - name: Check Codecov Coverage
-      uses: codecov/codecov-action@v3
-      with:
-        file: coverage.xml
-        token: ${{ secrets.CODECOV_TOKEN }}
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      continue-on-error: true
-
-    - name: Ensure coverage is above 60%
+    - name: Check Coverage Percentage
       run: |
-        echo "Waiting for Codecov to process the coverage data..."
-        sleep 15  # Aguarda alguns segundos para garantir que o Codecov tenha tempo para processar
-        coverage=$(curl -s https://codecov.io/api/gh/${{ github.repository }}/reports/coverage)
+        # Extrair o valor da cobertura diretamente do XML gerado pelo PHPUnit
+        coverage=$(xpath -q -e "string(//coverage/@line-rate)" coverage.xml)
 
-        # Verifica se a resposta da API tem um valor de cobertura
-        if [[ "$coverage" == *"\"total\""* ]]; then
-          coverage_value=$(echo "$coverage" | jq -r '.total.coverage')
-          # Verifica se o valor da cobertura é um número e realiza a comparação
-          if [[ "$coverage_value" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
-            coverage_value_int=$(echo "$coverage_value" | awk '{print int($1)}')
-            if [ "$coverage_value_int" -lt 60 ]; then
-              echo "Coverage is below 60%, failing the workflow."
-              exit 1
-            fi
-            echo "Coverage is above 60%, proceeding."
-          else
-            echo "Coverage value is invalid or unavailable, skipping check."
-            exit 0
-          fi
-        else
-          echo "Coverage data not available, skipping check."
-          exit 0
+        # Verificar se a cobertura é abaixo de 60%
+        coverage_percentage=$(echo "$coverage * 100" | bc -l)
+        coverage_percentage_int=$(echo "$coverage_percentage" | awk '{print int($1)}')
+
+        echo "Code Coverage: $coverage_percentage_int%"
+
+        if [ "$coverage_percentage_int" -lt 60 ]; then
+          echo "Coverage is below 60%, failing the workflow."
+          exit 1
         fi
+        echo "Coverage is above 60%, proceeding."
