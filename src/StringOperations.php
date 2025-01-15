@@ -4,23 +4,23 @@ namespace App;
 
 class StringOperations
 {
-    public function reverseString(string $str): string
+    public function reverseString($string)
     {
-        return strrev($str);
+        return strrev($string);
     }
 
-    public function toUpperCase(string $str): string
+    public function toUpperCase($string)
     {
-        return strtoupper($str);
+        return strtoupper($string);
     }
 
-    public function concatenate(string $str1, string $str2): string
+    public function concatenate($string1, $string2)
     {
-        return $str1 . $str2;
+        return $string1 . $string2;
     }
 
-    public function getLength(string $str): int
+    public function getSubstring($string, $start, $length)
     {
-        return strlen($str);
+        return substr($string, $start, $length);
     }
 }
