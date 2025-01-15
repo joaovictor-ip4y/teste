@@ -19,8 +19,13 @@ class StringOperations
         return $string1 . $string2;
     }
 
-    public function getSubstring($string, $start, $length)
+    public function getLength($string)
     {
-        return substr($string, $start, $length);
+        return strlen($string);
+    }
+
+    public function contains($string, $substring)
+    {
+        return strpos($string, $substring) !== false;
     }
 }
