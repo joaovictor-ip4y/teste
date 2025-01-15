@@ -36,20 +36,20 @@ jobs:
         file: coverage.xml
         token: ${{ secrets.CODECOV_TOKEN }}
 
-    - name: Check Codecov Coverage
+    - name: Ensure coverage is above 60%
       run: |
-        # Pega a resposta completa da API
-        response=$(curl -s https://codecov.io/api/gh/${{ github.repository }}/reports/coverage)
-        
-        # Exibe a resposta completa para depuração
-        echo "Codecov API Response: $response"
-        
-        # Pega a cobertura total do repositório
-        coverage=$(echo "$response" | jq -r '.total.coverage')
-        echo "Coverage is: $coverage"
-        
-        # Se a cobertura for um número decimal, arredonda para o valor inteiro
-        coverage_value=$(echo "$coverage" | awk '{print int($1)}')
+        # Aguardar alguns segundos para garantir que o Codecov processe os dados
+        sleep 10
+
+        # Verificar o status de cobertura diretamente na URL pública
+        coverage=$(curl -s https://codecov.io/gh/${{ github.repository }}/branch/main)
+        # Exibir a URL do Codecov para depuração
+        echo "Coverage URL Response: $coverage"
+
+        # Buscar o valor da cobertura do HTML (Extraindo a porcentagem)
+        coverage_value=$(echo "$coverage" | grep -oP 'class="text-coverage">(\d+)%' | sed 's/class="text-coverage">//' | sed 's/%//')
+
+        echo "Extracted Coverage: $coverage_value"
 
         # Verifica se a cobertura é menor que 60%
         if [ "$coverage_value" -lt 60 ]; then
