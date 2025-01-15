@@ -1,4 +1,4 @@
-name: Run Tests and Upload Coverage
+name: Run Tests and Validate Coverage
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
 
     - name: Run PHPUnit tests with coverage
       run: |
-        vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
+        vendor/bin/phpunit --coverage-clover=coverage.xml
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
@@ -38,11 +38,19 @@ jobs:
 
     - name: Ensure coverage is above 60%
       run: |
-        coverage=$(curl -s https://codecov.io/api/gh/${{ github.repository }}/reports/coverage | jq -r '.total.coverage')
-        echo "Code coverage: $coverage"
+        response=$(curl -s https://codecov.io/api/gh/${{ github.repository }}/reports/coverage)
+        echo "API Response: $response"
+        coverage=$(echo "$response" | jq -r '.total.coverage')
+        if [ -z "$coverage" ]; then
+          echo "Error: Failed to fetch coverage data."
+          exit 1
+        fi
         coverage_value=$(echo "$coverage" | awk '{print int($1)}')
+        echo "Parsed Coverage: $coverage_value%"
         if [ "$coverage_value" -lt 60 ]; then
           echo "Coverage is below 60%, failing the workflow."
           exit 1
         fi
         echo "Coverage is above 60%, proceeding."
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
