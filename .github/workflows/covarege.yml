@@ -25,11 +25,11 @@ jobs:
     - name: Install dependencies
       run: |
         composer install --no-interaction
-        
+
     - name: Run PHPUnit tests with coverage
       run: |
         vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
-        
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
@@ -38,11 +38,10 @@ jobs:
 
     - name: Ensure coverage is above 60%
       run: |
-        # Espera-se que o valor de coverage seja uma string, então removemos espaços extras e verificamos.
-        coverage=$(curl -s https://codecov.io/api/gh/${{ github.repository }}/reports/coverage | jq -r '.total.coverage' | tr -d '\n' | tr -d '[:space:]')
-
-        # Agora comparando o valor da cobertura com 60
-        if [ $(echo "$coverage < 60" | bc) -eq 1 ]; then
+        coverage=$(curl -s https://codecov.io/api/gh/${{ github.repository }}/reports/coverage | jq -r '.total.coverage')
+        echo "Code coverage: $coverage"
+        coverage_value=$(echo "$coverage" | awk '{print int($1)}')
+        if [ "$coverage_value" -lt 60 ]; then
           echo "Coverage is below 60%, failing the workflow."
           exit 1
         fi
