@@ -1,5 +1,7 @@
+<?php
+
 use PHPUnit\Framework\TestCase;
-use App\Calculator;
+use App\Calculator;  // Certifique-se de que este é o caminho correto para a sua classe
 
 class CalculatorTest extends TestCase
 {
@@ -14,6 +16,4 @@ class CalculatorTest extends TestCase
         $calculator = new Calculator();
         $this->assertEquals(1, $calculator->subtract(3, 2));
     }
-
-    // Removendo ou simplificando outros testes para garantir cobertura menor
 }

@@ -1,3 +1,5 @@
+<?php
+
 namespace App;
 
 class Calculator
@@ -12,7 +14,6 @@ class Calculator
         return $a - $b;
     }
 
-    // Remover ou deixar funções sem cobertura
     public function multiply($a, $b)
     {
         return $a * $b;
