@@ -1,31 +1,27 @@
-<?php
-// src/Calculator.php
-
 namespace App;
-
-use InvalidArgumentException; // Importando a exceção global
 
 class Calculator
 {
-    public function add(int $a, int $b): int
+    public function add($a, $b)
     {
         return $a + $b;
     }
 
-    public function subtract(int $a, int $b): int
+    public function subtract($a, $b)
     {
         return $a - $b;
     }
 
-    public function multiply(int $a, int $b): int
+    // Remover ou deixar funções sem cobertura
+    public function multiply($a, $b)
     {
         return $a * $b;
     }
 
-    public function divide(int $a, int $b): float
+    public function divide($a, $b)
     {
         if ($b == 0) {
-            throw new InvalidArgumentException("Division by zero is not allowed.");
+            throw new InvalidArgumentException('Cannot divide by zero');
         }
         return $a / $b;
     }
