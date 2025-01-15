@@ -38,7 +38,7 @@ jobs:
 
     - name: Ensure coverage is above 60%
       run: |
-        coverage=$(curl -s https://api.codecov.io/gh/joaovictor-ip4y/teste/report | jq -r '.total.coverage')
+        coverage=$(curl -s https://codecov.io/api/gh/joaovictor-ip4y/teste/commits | jq -r '.commit.cumulative_coverage')
         coverage_value=$(echo "$coverage" | awk '{print int($1)}')
         if [ "$coverage_value" -lt 60 ]; then
           echo "Coverage is below 60%, failing the workflow."
