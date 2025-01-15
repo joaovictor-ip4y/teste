@@ -3,6 +3,8 @@
 
 namespace App;
 
+use InvalidArgumentException; // Importando a exceção global
+
 class Calculator
 {
     public function add(int $a, int $b): int
