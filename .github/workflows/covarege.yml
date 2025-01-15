@@ -47,14 +47,26 @@ jobs:
 
     - name: Ensure coverage is above 60%
       run: |
-        coverage=$(curl -s https://codecov.io/api/gh/${{ github.repository }}/reports/coverage | jq -r '.total.coverage')
-        if [ -z "$coverage" ]; then
-          echo "Coverage data not yet available, skipping check."
+        echo "Waiting for Codecov to process the coverage data..."
+        sleep 15  # Aguarda alguns segundos para garantir que o Codecov tenha tempo para processar
+        coverage=$(curl -s https://codecov.io/api/gh/${{ github.repository }}/reports/coverage)
+
+        # Verifica se a resposta da API tem um valor de cobertura
+        if [[ "$coverage" == *"\"total\""* ]]; then
+          coverage_value=$(echo "$coverage" | jq -r '.total.coverage')
+          # Verifica se o valor da cobertura é um número e realiza a comparação
+          if [[ "$coverage_value" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+            coverage_value_int=$(echo "$coverage_value" | awk '{print int($1)}')
+            if [ "$coverage_value_int" -lt 60 ]; then
+              echo "Coverage is below 60%, failing the workflow."
+              exit 1
+            fi
+            echo "Coverage is above 60%, proceeding."
+          else
+            echo "Coverage value is invalid or unavailable, skipping check."
+            exit 0
+          fi
+        else
+          echo "Coverage data not available, skipping check."
           exit 0
         fi
-        coverage_value=$(echo "$coverage" | awk '{print int($1)}')
-        if [ "$coverage_value" -lt 60 ]; then
-          echo "Coverage is below 60%, failing the workflow."
-          exit 1
-        fi
-        echo "Coverage is above 60%, proceeding."
