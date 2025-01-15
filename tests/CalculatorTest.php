@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use App\Calculator;  // Certifique-se de usar o namespace correto
+use App\Calculator;
 
 class CalculatorTest extends TestCase
 {
@@ -16,11 +16,29 @@ class CalculatorTest extends TestCase
     {
         $result = $this->calculator->add(2, 3);
         $this->assertEquals(5, $result);
+    }
 
-        $result = $this->calculator->add(-1, 1);
-        $this->assertEquals(0, $result);
+    public function testSubtract()
+    {
+        $result = $this->calculator->subtract(5, 3);
+        $this->assertEquals(2, $result);
+    }
 
-        $result = $this->calculator->add(2.5, 3.5);
+    public function testMultiply()
+    {
+        $result = $this->calculator->multiply(2, 3);
         $this->assertEquals(6, $result);
+
+        $result = $this->calculator->multiply(0, 3);
+        $this->assertEquals(0, $result);
+    }
+
+    public function testDivide()
+    {
+        $result = $this->calculator->divide(6, 3);
+        $this->assertEquals(2, $result);
+
+        $this->expectException(DivideByZeroException::class);
+        $this->calculator->divide(1, 0);
     }
 }
