@@ -1,7 +1,10 @@
 <?php
 
+namespace Tests;
+
 use PHPUnit\Framework\TestCase;
 use App\Calculator;
+use App\DivideByZeroException;  // Importando a exceção personalizada
 
 class CalculatorTest extends TestCase
 {
