@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1736948014">
-  <project timestamp="1736948014">
-    <file name="/home/joao_victor/Projects/teste/src/StringOperations.php">
-      <class name="App\StringOperations" namespace="global">
-        <metrics complexity="4" methods="4" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="2" elements="8" coveredelements="4"/>
+<coverage generated="1736948716">
+  <project timestamp="1736948716">
+    <file name="/home/joao_victor/Projects/teste/src/StringManipulation.php">
+      <class name="App\StringManipulation" namespace="global">
+        <metrics complexity="3" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="2" elements="6" coveredelements="4"/>
       </class>
       <line num="7" type="method" name="reverseString" visibility="public" complexity="1" crap="1" count="1"/>
       <line num="9" type="stmt" count="1"/>
-      <line num="12" type="method" name="toUpperCase" visibility="public" complexity="1" crap="1" count="1"/>
+      <line num="12" type="method" name="isEmpty" visibility="public" complexity="1" crap="1" count="1"/>
       <line num="14" type="stmt" count="1"/>
-      <line num="18" type="method" name="toLowerCase" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="17" type="method" name="countCharacters" visibility="public" complexity="1" crap="2" count="0"/>
       <line num="20" type="stmt" count="0"/>
-      <line num="24" type="method" name="concatenateStrings" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="26" type="stmt" count="0"/>
-      <metrics loc="29" ncloc="27" classes="1" methods="4" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="2" elements="8" coveredelements="4"/>
+      <metrics loc="23" ncloc="20" classes="1" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="2" elements="6" coveredelements="4"/>
     </file>
-    <metrics files="1" loc="29" ncloc="27" classes="1" methods="4" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="2" elements="8" coveredelements="4"/>
+    <metrics files="1" loc="23" ncloc="20" classes="1" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="2" elements="6" coveredelements="4"/>
   </project>
 </coverage>
