@@ -3,7 +3,7 @@ name: Merge Back Hotfix
 on:
   push:
     branches:
-      - main  # Dispara quando a master recebe um merge
+      - main  # Dispara quando a main recebe um merge
 
 permissions:
   contents: write
@@ -21,45 +21,23 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-      - name: Garantir que a branch `hotfix`, `master`, e `dev` estão atualizadas
-        run: |
-          git fetch origin hotfix
-          git fetch origin master
-          git fetch origin dev
-
-      - name: Verificar se há commits da hotfix na master
-        id: check_changes
-        run: |
-          git log origin/master..origin/hotfix --oneline || echo "Não há novos commits na hotfix para mesclar."
-
-      - name: Criar Pull Request da master para dev
+      - name: Criar Pull Request da main para dev
         id: create_pr
-        if: success()  # Só cria PR se houver commits na hotfix para mesclar
         run: |
-          # Verificar se há commits novos
-          git fetch origin
-          BASE_SHA=$(git rev-parse origin/dev)
-          HEAD_SHA=$(git rev-parse origin/master)
-
-          if [ "$BASE_SHA" != "$HEAD_SHA" ]; then
-            PR_URL=$(gh pr create \
-              --base dev \
-              --head master \
-              --title "🔄 Merge back hotfix para dev" \
-              --body "Sincronizando as correções da hotfix na master para dev." \
-              --reviewer joaovictor-ip4y)
-            PR_NUMBER=$(echo $PR_URL | grep -oE '[0-9]+$')
-            echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
-          else
-            echo "Nenhuma mudança para mesclar entre master e dev."
-          fi
+          PR_URL=$(gh pr create \
+            --base dev \
+            --head main \
+            --title "🔄 Merge back hotfix para dev" \
+            --body "Sincronizando as correções da main para dev.")
+          PR_NUMBER=$(echo $PR_URL | grep -oE '[0-9]+$')
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
-      - name: Aprovar e mesclar PR automaticamente (opcional)
+      - name: Aprovar e mesclar PR automaticamente
         if: env.PR_NUMBER != ''
         run: |
           gh pr review $PR_NUMBER --approve
-          gh pr merge $PR_NUMBER --squash
+          gh pr merge $PR_NUMBER --squash --merge
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
