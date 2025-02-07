@@ -21,8 +21,15 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
+      - name: Verificar se há mudanças entre master e dev
+        id: check_changes
+        run: |
+          git fetch origin dev
+          git diff --exit-code origin/dev..origin/master || echo "Há diferenças entre master e dev"
+        
       - name: Criar Pull Request da master para dev
         id: create_pr
+        if: success()  # Só cria PR se houver mudanças
         run: |
           PR_URL=$(gh pr create \
             --base dev \
