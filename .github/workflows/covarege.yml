@@ -25,29 +25,38 @@ jobs:
     - name: Install dependencies
       run: |
         composer install --no-interaction
-    - name: Run PHPUnit tests with coverage
-      run: |
-        vendor/bin/phpunit --coverage-text
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: coverage.xml
-        token: ${{ secrets.CODECOV_TOKEN }}
 
-    - name: Check Codecov Coverage
-      uses: codecov/codecov-action@v3
+    - name: Install xmllint
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libxml2-utils
+
+    - name: Run PHPUnit tests and generate JUnit and Coverage reports
+      run: |
+        ./vendor/bin/phpunit --log-junit junit.xml --coverage-clover coverage.xml
+
+    - name: Upload test results to Codecov
+      uses: codecov/test-results-action@v1
       with:
-        file: coverage.xml
         token: ${{ secrets.CODECOV_TOKEN }}
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      continue-on-error: true # Allow to fail without failing the entire workflow
+        files: junit.xml
 
     - name: Ensure coverage is above 60%
       run: |
-        coverage=$(curl -s https://codecov.io/api/gh/${{ github.repository }}/reports/coverage | jq -r '.total.coverage')
-        if [ $(echo "$coverage < 60" | bc) -eq 1 ]; then
+        # Parse the Clover XML file to extract coverage percentage
+        coverage=$(xmllint --xpath "string(//coverage/@line-rate)" coverage.xml)
+        
+        if [ -z "$coverage" ]; then
+          echo "Error: Coverage data not found in Clover report."
+          exit 1
+        fi
+
+        coverage_value=$(echo "$coverage" | awk '{print int($1 * 100)}')
+        echo "Parsed Coverage: $coverage_value%"
+        
+        if [ "$coverage_value" -lt 60 ]; then
           echo "Coverage is below 60%, failing the workflow."
           exit 1
         fi
+        
         echo "Coverage is above 60%, proceeding."
