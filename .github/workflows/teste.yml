@@ -34,13 +34,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
-      - name: Aprovar PR automaticamente
-        if: env.PR_NUMBER != ''
-        run: |
-          gh pr review $PR_NUMBER --approve
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-
       - name: Mesclar PR automaticamente
         if: env.PR_NUMBER != ''
         run: |
