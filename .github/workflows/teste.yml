@@ -3,7 +3,7 @@ name: Merge Back Hotfix
 on:
   push:
     branches:
-      - main  # Dispara quando a master recebe um merge
+      - master  # Dispara quando a master recebe um merge
 
 permissions:
   contents: write
@@ -28,20 +28,23 @@ jobs:
           
           if [ "$PR_EXISTS" != "null" ]; then
             echo "Já existe um PR aberto da master para dev."
+            echo "PR_NUMBER=$PR_EXISTS" >> $GITHUB_ENV
           else
-            gh pr create \
+            PR_URL=$(gh pr create \
               --base dev \
               --head master \
               --title "🔄 Merge back hotfix para dev" \
               --body "Sincronizando as correções da master para dev." \
-              --reviewer joaovictor-ip4y
+              --reviewer joaovictor-ip4y)
+            PR_NUMBER=$(echo $PR_URL | grep -oE '[0-9]+$')
+            echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
           fi
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Aprovar e mesclar PR automaticamente (opcional)
+        if: env.PR_NUMBER != ''
         run: |
-          PR_NUMBER=$(gh pr list --base dev --head master --json number --jq '.[0].number')
           gh pr review $PR_NUMBER --approve
           gh pr merge $PR_NUMBER --squash
         env:
