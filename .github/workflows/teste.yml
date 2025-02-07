@@ -1,0 +1,38 @@
+name: Merge Back Hotfix
+
+on:
+  push:
+    branches:
+      - main # Dispara quando a master recebe um merge
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge-back:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Criar PR da master para dev
+        id: create_pr
+        run: |
+          gh pr create \
+            --base dev \
+            --head master \
+            --title "Merge back hotfix para dev" \
+            --body "Este PR sincroniza as correções da master para dev automaticamente." \
+            --reviewer @seu-usuario-github
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+      - name: Aprovar e mesclar PR automaticamente (opcional)
+        if: success()
+        run: |
+          PR_NUMBER=$(gh pr list --base dev --head master --json number --jq '.[0].number')
+          gh pr review $PR_NUMBER --approve
+          gh pr merge $PR_NUMBER --squash --delete-branch
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
