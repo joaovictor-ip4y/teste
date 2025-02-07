@@ -21,24 +21,38 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-      - name: Verificar se há mudanças entre master e dev
+      - name: Garantir que a branch `hotfix`, `master`, e `dev` estão atualizadas
+        run: |
+          git fetch origin hotfix
+          git fetch origin master
+          git fetch origin dev
+
+      - name: Verificar se há commits da hotfix na master
         id: check_changes
         run: |
-          git fetch origin dev
-          git diff --exit-code origin/dev..origin/master || echo "Há diferenças entre master e dev"
-        
+          git log origin/master..origin/hotfix --oneline || echo "Não há novos commits na hotfix para mesclar."
+
       - name: Criar Pull Request da master para dev
         id: create_pr
-        if: success()  # Só cria PR se houver mudanças
+        if: success()  # Só cria PR se houver commits na hotfix para mesclar
         run: |
-          PR_URL=$(gh pr create \
-            --base dev \
-            --head master \
-            --title "🔄 Merge back hotfix para dev" \
-            --body "Sincronizando as correções da master para dev." \
-            --reviewer joaovictor-ip4y)
-          PR_NUMBER=$(echo $PR_URL | grep -oE '[0-9]+$')
-          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+          # Verificar se há commits novos
+          git fetch origin
+          BASE_SHA=$(git rev-parse origin/dev)
+          HEAD_SHA=$(git rev-parse origin/master)
+
+          if [ "$BASE_SHA" != "$HEAD_SHA" ]; then
+            PR_URL=$(gh pr create \
+              --base dev \
+              --head master \
+              --title "🔄 Merge back hotfix para dev" \
+              --body "Sincronizando as correções da hotfix na master para dev." \
+              --reviewer joaovictor-ip4y)
+            PR_NUMBER=$(echo $PR_URL | grep -oE '[0-9]+$')
+            echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+          else
+            echo "Nenhuma mudança para mesclar entre master e dev."
+          fi
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
