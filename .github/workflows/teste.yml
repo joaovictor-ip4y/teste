@@ -3,7 +3,7 @@ name: Merge Back Hotfix
 on:
   push:
     branches:
-      - main # Dispara quando a master recebe um merge
+      - main  # Dispara quando a master recebe um merge
 
 permissions:
   contents: write
@@ -16,23 +16,33 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Criar PR da master para dev
+      - name: Configurar Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Criar Pull Request da master para dev
         id: create_pr
         run: |
-          gh pr create \
-            --base dev \
-            --head master \
-            --title "Merge back hotfix para dev" \
-            --body "Este PR sincroniza as correções da master para dev automaticamente." \
-            --reviewer @seu-usuario-github
+          PR_EXISTS=$(gh pr list --base dev --head master --json number --jq '.[0].number' || echo "null")
+          
+          if [ "$PR_EXISTS" != "null" ]; then
+            echo "Já existe um PR aberto da master para dev."
+          else
+            gh pr create \
+              --base dev \
+              --head master \
+              --title "🔄 Merge back hotfix para dev" \
+              --body "Sincronizando as correções da master para dev." \
+              --reviewer joaovictor-ip4y
+          fi
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Aprovar e mesclar PR automaticamente (opcional)
-        if: success()
         run: |
           PR_NUMBER=$(gh pr list --base dev --head master --json number --jq '.[0].number')
           gh pr review $PR_NUMBER --approve
-          gh pr merge $PR_NUMBER --squash --delete-branch
+          gh pr merge $PR_NUMBER --squash
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
