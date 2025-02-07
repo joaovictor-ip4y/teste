@@ -34,9 +34,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
-      - name: Mesclar PR automaticamente
+      - name: Mesclar PR automaticamente (Squash)
         if: env.PR_NUMBER != ''
         run: |
-          gh pr merge $PR_NUMBER --squash --merge
+          gh pr merge $PR_NUMBER --squash
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
