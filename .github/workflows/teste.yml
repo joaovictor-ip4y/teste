@@ -3,7 +3,7 @@ name: Merge Back Hotfix
 on:
   push:
     branches:
-      - master  # Dispara quando a master recebe um merge
+      - main  # Dispara quando a master recebe um merge
 
 permissions:
   contents: write
