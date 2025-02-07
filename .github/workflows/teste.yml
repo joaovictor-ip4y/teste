@@ -34,10 +34,16 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
-      - name: Aprovar e mesclar PR automaticamente
+      - name: Aprovar PR automaticamente com JoaoAoki
         if: env.PR_NUMBER != ''
         run: |
-          gh pr review $PR_NUMBER --approve
+          gh pr review $PR_NUMBER --approve --reviewer JoaoAoki
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+      - name: Mesclar PR automaticamente
+        if: env.PR_NUMBER != ''
+        run: |
           gh pr merge $PR_NUMBER --squash --merge
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
