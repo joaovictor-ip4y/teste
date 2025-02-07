@@ -1,0 +1,42 @@
+name: Merge Back Hotfix
+
+on:
+  push:
+    branches:
+      - main  # Dispara quando a main recebe um merge
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge-back:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Criar Pull Request da main para dev
+        id: create_pr
+        run: |
+          PR_URL=$(gh pr create \
+            --base dev \
+            --head main \
+            --title "🔄 Merge back hotfix para dev" \
+            --body "Sincronizando as correções da main para dev.")
+          PR_NUMBER=$(echo $PR_URL | grep -oE '[0-9]+$')
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+      - name: Mesclar PR automaticamente (Squash)
+        if: env.PR_NUMBER != ''
+        run: |
+          gh pr merge $PR_NUMBER --squash
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
